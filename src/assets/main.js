@@ -5,6 +5,7 @@ const menuHamIcon = document.querySelector(".menu");
 const mobileMenu = document.querySelector(".mobile-menu");
 const desktopaside = document.querySelector(".chariot");
 const car = document.querySelector(".navbar-shopping-cart");
+const productDetailContainer = document.querySelector(".product-detail");
 
 const toggleMenu = (e) => {
   const isAsideClosed = desktopaside.classList.contains("inactive");
@@ -45,9 +46,20 @@ const repairDOM = () => {
     desktopaside.classList.add("inactive");
   }
 };
+
+const cerrar = () => {
+  productDetailContainer.classList.add("inactive");
+};
+
+const openProductDetail = () => {
+  productDetailContainer.classList.remove("inactive");
+};
 car.onclick = toggleChariot;
 menuEmail.onclick = toggleMenu;
 menuHamIcon.onclick = toggleMobileMenu;
+document
+  .querySelector(".product-detail-close")
+  .addEventListener("click", cerrar);
 
 const productList = [];
 productList.push({
@@ -69,22 +81,35 @@ productList.push({
   image: "https://api.lorem.space/image?w=640&h=480&r=3192",
 });
 
+
 function renderProducts(arr) {
   for (let product of arr) {
-    document.querySelector(
-      ".cards-container"
-    ).innerHTML += `<div class="product-card">
-        <img src="${product.image}" alt="">
-        <div class="product-info">
-          <div>
-            <p>$${product.price},00</p>
-            <p>${product.name}</p>
-          </div>
-          <figure>
-            <img src="src/icons/bt_add_to_cart.svg" alt="">
-          </figure>
-        </div>
-      </div>`;
+    const producCart = document.createElement("div");
+    producCart.classList.add("product-card");
+
+    const productImg = document.createElement("img");
+    productImg.setAttribute("src", product.image);
+    productImg.addEventListener("click", openProductDetail);
+
+    const producInfo = document.createElement("div");
+    producInfo.classList.add("product-info");
+
+    const productInfoDiv = document.createElement("div");
+
+    const productPrice = document.createElement("p");
+    productPrice.innerText = "$" + product.price;
+    const productName = document.createElement("p");
+    productName.innerText = product.name;
+
+    const figure = document.createElement("figure");
+    figure.innerHTML = '<img src="src/icons/bt_add_to_cart.svg" alt="">';
+
+    productInfoDiv.append(productPrice, productName);
+    producInfo.append(productInfoDiv, figure);
+    producCart.append(productImg, producInfo);
+
+    document.querySelector(".cards-container").appendChild(producCart);
+    
   }
 }
 
